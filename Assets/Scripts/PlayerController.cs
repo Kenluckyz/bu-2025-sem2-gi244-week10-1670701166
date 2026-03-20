@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem dirtParticle;
     public ParticleSystem hitEffect;
 
-   
+
     public AudioClip jumpSfx;
     public AudioClip crashSfx;
 
