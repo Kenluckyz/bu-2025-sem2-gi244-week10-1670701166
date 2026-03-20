@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     public float gravityModifier;
     public ParticleSystem explosionParticle;
     public ParticleSystem dirtParticle;
+    public ParticleSystem hitEffect;
+
 
     public AudioClip jumpSfx;
     public AudioClip crashSfx;
@@ -14,10 +16,11 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private InputAction jumpAction;
     private bool isOnGround = true;
-    private bool doubleJump = false;
 
     private Animator playerAnim;
     private AudioSource playerAudio;
+
+    public int hp = 3;
 
     public bool gameOver = false;
 
@@ -41,26 +44,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (jumpAction.triggered && !gameOver)
+        if (jumpAction.triggered && isOnGround && !gameOver)
         {
-            if (isOnGround)
-            {
-                rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
-                isOnGround = false;
-                playerAnim.SetTrigger("Jump_trig");
-                dirtParticle.Stop();
-                playerAudio.PlayOneShot(jumpSfx);
-                doubleJump = true;
-            }
-            else if (doubleJump)
-            {
-                rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
-                isOnGround = false;
-                playerAnim.SetTrigger("Jump_trig");
-                dirtParticle.Stop();
-                playerAudio.PlayOneShot(jumpSfx);
-                doubleJump = false;
-            }
+            rb.AddForce(jumpForce * Vector3.up, ForceMode.Impulse);
+            isOnGround = false;
+            playerAnim.SetTrigger("Jump_trig");
+            dirtParticle.Stop();
+            playerAudio.PlayOneShot(jumpSfx);
         }
     }
 
@@ -69,19 +59,33 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isOnGround = true;
-            doubleJump = false;
             dirtParticle.Play();
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log("Game Over!");
-            gameOver = true;
-            playerAnim.SetBool("Death_b", true);
-            playerAnim.SetInteger("DeathType_int", 1);
-            explosionParticle.Play();
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(crashSfx);
-        }
-    }
+            hp -= 1;
+            Debug.Log("HP: " + hp);
 
+            if (hitEffect != null)
+            {
+                ParticleSystem effect = Instantiate(hitEffect, collision.transform.position, Quaternion.identity);
+
+                effect.Play();
+
+            }
+            Destroy(collision.gameObject);
+            playerAudio.PlayOneShot(crashSfx);
+            if (hp <= 0)
+            {
+                Debug.Log("Game Over!");
+                gameOver = true;
+                playerAnim.SetBool("Death_b", true);
+                playerAnim.SetInteger("DeathType_int", 1);
+                explosionParticle.Play();
+                dirtParticle.Stop();
+                playerAudio.PlayOneShot(crashSfx);
+            }
+        }
+
+    }
 }
