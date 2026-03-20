@@ -3,6 +3,7 @@ using UnityEngine;
 public class MoveLeft : MonoBehaviour
 {
     public float speed = 10f;
+    public float dash = 2f;
 
     private float leftBound = -15;
 
@@ -13,12 +14,19 @@ public class MoveLeft : MonoBehaviour
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!playerController.gameOver)
         {
-            transform.Translate(Vector3.left * Time.deltaTime * speed);
+            float currentSpeed = speed;
+
+
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                currentSpeed *= dash;
+            }
+
+            transform.Translate(Vector3.left * Time.deltaTime * currentSpeed);
         }
 
         if (transform.position.x < leftBound && gameObject.CompareTag("Obstacle"))
