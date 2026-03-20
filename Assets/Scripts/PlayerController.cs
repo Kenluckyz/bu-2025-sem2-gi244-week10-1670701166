@@ -7,7 +7,9 @@ public class PlayerController : MonoBehaviour
     public float gravityModifier;
     public ParticleSystem explosionParticle;
     public ParticleSystem dirtParticle;
+    public ParticleSystem hitEffect;
 
+   
     public AudioClip jumpSfx;
     public AudioClip crashSfx;
 
@@ -17,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     private Animator playerAnim;
     private AudioSource playerAudio;
+
+    public int hp = 3;
 
     public bool gameOver = false;
 
@@ -59,14 +63,29 @@ public class PlayerController : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Obstacle"))
         {
-            Debug.Log("Game Over!");
-            gameOver = true;
-            playerAnim.SetBool("Death_b", true);
-            playerAnim.SetInteger("DeathType_int", 1);
-            explosionParticle.Play();
-            dirtParticle.Stop();
-            playerAudio.PlayOneShot(crashSfx);
-        }
-    }
+            hp -= 1;
+            Debug.Log("HP: " + hp);
 
+            if (hitEffect != null)
+            {
+                ParticleSystem effect = Instantiate(hitEffect, collision.transform.position, Quaternion.identity);
+
+                effect.Play();
+
+            }
+            Destroy(collision.gameObject);
+            playerAudio.PlayOneShot(crashSfx);
+            if (hp <= 0)
+            {
+                Debug.Log("Game Over!");
+                gameOver = true;
+                playerAnim.SetBool("Death_b", true);
+                playerAnim.SetInteger("DeathType_int", 1);
+                explosionParticle.Play();
+                dirtParticle.Stop();
+                playerAudio.PlayOneShot(crashSfx);
+            }
+        }
+
+    }
 }

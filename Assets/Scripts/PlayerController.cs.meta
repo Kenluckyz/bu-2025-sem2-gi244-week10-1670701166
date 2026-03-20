@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: 87059482b0c430644882ce49333b5982
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - explosionParticle: {instanceID: 0}
+  - dirtParticle: {instanceID: 0}
+  - hitEffect: {instanceID: 0}
+  - jumpSfx: {instanceID: 0}
+  - crashSfx: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
